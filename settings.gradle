@@ -8,3 +8,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "myhome"
 include ':app'
+include ':network'
