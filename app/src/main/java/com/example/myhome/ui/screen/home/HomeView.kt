@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.myhome.R
+import com.example.myhome.ui.graph.RootScreen
 import com.example.network.model.Card
 import com.example.network.model.User
 import com.google.accompanist.glide.rememberGlidePainter
@@ -29,8 +30,12 @@ fun HomeView(
 ) {
     HomeView(
         state = viewModel.state,
-        showPopularCard = { id -> Timber.i("CardId:$id") },
-        showPopularUser = { id -> Timber.i("UserId:$id") }
+        showPopularCard = { cardId ->
+            navController.navigate(route = RootScreen.CardDetail.createRoute(cardId = cardId))
+        },
+        showPopularUser = { userId ->
+            navController.navigate(route = RootScreen.UserDetail.createRoute(userId = userId))
+        }
     )
 }
 
@@ -65,7 +70,8 @@ internal fun HomeView(
                             }
                         )
                     }
-                    HomeViewState.Empty -> { }
+                    HomeViewState.Empty -> {
+                    }
                     HomeViewState.Loading -> {
                         Box(
                             contentAlignment = Alignment.Center,
@@ -75,16 +81,14 @@ internal fun HomeView(
                         }
                     }
                     is HomeViewState.Success -> {
-                        Text("인기 카드를 클릭해 보세요.")
-                        Spacer(modifier = Modifier.height(4.dp))
-                        LazyRow(modifier = Modifier.fillMaxWidth()) {
-                            items(state.cards) { card ->
-                                CardItem(
-                                    card = card,
-                                    cardOnClick = { showPopularCard(card.id) }
-                                )
+                        CardItems(
+                            title = "인기 카드를 클릭해 보세요.",
+                            cards = state.cards,
+                            showOtherCard = { cardId ->
+                                showPopularCard(cardId)
                             }
-                        }
+                        )
+
                         Divider(
                             modifier = Modifier
                                 .height(1.dp)
@@ -108,6 +112,24 @@ internal fun HomeView(
         }
     )
 
+}
+
+@Composable
+fun CardItems(
+    title: String,
+    cards: List<Card>,
+    showOtherCard: (Int) -> Unit = {}
+) {
+    Text(title)
+    Spacer(modifier = Modifier.height(4.dp))
+    LazyRow(modifier = Modifier.fillMaxWidth()) {
+        items(cards) { card ->
+            CardItem(
+                card = card,
+                cardOnClick = { showOtherCard(card.id) }
+            )
+        }
+    }
 }
 
 @Composable

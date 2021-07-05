@@ -1,5 +1,6 @@
 package com.example.myhome.repository
 
+import androidx.paging.PagingData
 import com.example.network.helper.ResultWrapper
 import com.example.network.model.*
 import kotlinx.coroutines.flow.Flow
@@ -10,7 +11,7 @@ interface MyHomeRepository {
     suspend fun signUp(params: HashMap<String, Any>) : Flow<ResultWrapper<Auth>>
 
     suspend fun homes() : Flow<ResultWrapper<Home>>
-    suspend fun cards() : Flow<ResultWrapper<Cards>>
+    suspend fun cards() : Flow<PagingData<Card>>
 
     suspend fun cardDetails(cardId: Int) : Flow<ResultWrapper<CardDetail>>
     suspend fun userDetails(userId: Int) : Flow<ResultWrapper<UserDetail>>

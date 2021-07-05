@@ -16,7 +16,7 @@ interface MyHomeService {
     suspend fun home() : Home
 
     @GET("cards")
-    suspend fun cards() : Cards
+    suspend fun cards(@Query("page") page : Int) : Cards
 
     @GET("cards/{cardId}")
     suspend fun cardDetail(@Path("cardId") cardId: Int): CardDetail

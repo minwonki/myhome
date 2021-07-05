@@ -9,16 +9,22 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.example.myhome.R
+import com.example.myhome.ui.graph.RootScreen
+import com.example.network.model.Card
 import com.google.accompanist.glide.rememberGlidePainter
 import com.google.accompanist.imageloading.ImageLoadState
-import timber.log.Timber
 
 @Composable
 fun CardView(
@@ -26,17 +32,15 @@ fun CardView(
     viewModel: CardViewModel = hiltViewModel()
 ) {
     CardView(
-        state = viewModel.state,
-        cardOnClick = { id -> Timber.i("CardId:$id") },
-        closeAlert = { viewModel.getCards() }
+        cards = viewModel.cards.collectAsLazyPagingItems(),
+        cardOnClick = { cardId -> navController.navigate(route = RootScreen.CardDetail.createRoute(cardId = cardId)) }
     )
 }
 
 @Composable
 internal fun CardView(
-    state: CardViewState,
-    cardOnClick: (Int) -> Unit = {},
-    closeAlert: () -> Unit = {}
+    cards: LazyPagingItems<Card>,
+    cardOnClick: (Int) -> Unit = {}
 ) {
     Scaffold(
         topBar = {},
@@ -46,81 +50,138 @@ internal fun CardView(
                     .fillMaxSize()
                     .padding(10.dp)
             ) {
-                when (state) {
-                    is CardViewState.Alert -> {
-                        AlertDialog(
-                            title = { Text(text = "Alert") },
-                            text = { Text(text = state.msg) },
-                            onDismissRequest = { closeAlert() },
-                            modifier = Modifier.padding(20.dp),
-                            confirmButton = {
-                                Button(
-                                    onClick = { closeAlert() }
-                                ) {
-                                    Text("OK")
-                                }
-                            }
-                        )
-                    }
-                    CardViewState.Empty -> {
-                    }
-                    CardViewState.Loading -> {
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            CircularProgressIndicator()
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(10.dp)
+                ) {
+                    items(cards) { card ->
+                        card?.let {
+                            CardItem(
+                                card = card,
+                                cardOnClick = cardOnClick
+                            )
                         }
                     }
-                    is CardViewState.Success -> {
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(20.dp)
-                        ) {
-                            items(state.cards) { card ->
-                                val painter = rememberGlidePainter(request = card.imgUrl)
-                                Column {
-                                    Box(
+
+                    cards.apply {
+                        when {
+                            loadState.refresh is LoadState.Loading -> {
+                                item { LoadingView(modifier = Modifier.fillParentMaxSize()) }
+                            }
+                            loadState.append is LoadState.Loading -> {
+                                item {
+                                    CircularProgressIndicator(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .height(300.dp)
-                                            .clickable {
-                                                cardOnClick(card.id)
-                                            },
-                                        contentAlignment = Alignment.Center,
-                                    ) {
-
-                                        Image(
-                                            painter = painter,
-                                            contentDescription = stringResource(R.string.image_content_desc),
-                                            contentScale = ContentScale.Crop
-                                        )
-
-                                        when (painter.loadState) {
-                                            is ImageLoadState.Loading -> {
-                                                CircularProgressIndicator(Modifier.align(Alignment.Center))
-                                            }
-                                            is ImageLoadState.Error -> {
-//                                                Image(
-//                                                    painter = painterResource(id = R.drawable.placeholder),
-//                                                    contentDescription = stringResource(R.string.image_content_desc),
-//                                                    contentScale = ContentScale.FillWidth
-//                                                )
-                                            }
-                                            else -> {
-                                            }
-                                        }
-                                    }
-                                    Text(card.description)
+                                            .padding(16.dp)
+                                            .wrapContentWidth(Alignment.CenterHorizontally)
+                                    )
                                 }
-
+                            }
+                            loadState.refresh is LoadState.Error -> {
+                                val e = cards.loadState.refresh as LoadState.Error
+                                item {
+                                    ErrorItem(
+                                        message = "${e.error.message}",
+                                        modifier = Modifier.fillParentMaxSize(),
+                                        onClickRetry = { refresh() }
+                                    )
+                                }
+                            }
+                            loadState.append is LoadState.Error -> {
+                                val e = cards.loadState.append as LoadState.Error
+                                item {
+                                    ErrorItem(
+                                        message = "${e.error.message}",
+                                        onClickRetry = { retry() }
+                                    )
+                                }
                             }
                         }
                     }
                 }
+
             }
 
         }
     )
+}
+
+@Composable
+fun CardItem(
+    card : Card,
+    cardOnClick: (Int) -> Unit
+) {
+    val painter = rememberGlidePainter(request = card.imgUrl)
+    Column {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(300.dp)
+                .clickable {
+                    cardOnClick(card.id)
+                },
+            contentAlignment = Alignment.Center,
+        ) {
+
+            Image(
+                painter = painter,
+                contentDescription = stringResource(R.string.image_content_desc),
+                contentScale = ContentScale.Crop
+            )
+
+            when (painter.loadState) {
+                is ImageLoadState.Loading -> {
+                    CircularProgressIndicator(Modifier.align(Alignment.Center))
+                }
+                is ImageLoadState.Error -> {
+                    Image(
+                        painter = painterResource(id = R.drawable.placeholder),
+                        contentDescription = stringResource(R.string.image_content_desc)
+                    )
+                }
+                else -> {
+                }
+            }
+        }
+        Text(card.description)
+    }
+}
+
+@Composable
+fun ErrorItem(
+    message: String,
+    modifier: Modifier = Modifier,
+    onClickRetry: () -> Unit
+) {
+    Row(
+        modifier = modifier.padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = message,
+            maxLines = 1,
+            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.h6,
+            color = Color.Red
+        )
+        OutlinedButton(onClick = onClickRetry) {
+            Text(text = "Try again")
+        }
+    }
+}
+
+@Composable
+fun LoadingView(
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        CircularProgressIndicator()
+    }
 }

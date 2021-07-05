@@ -1,5 +1,6 @@
 package com.example.myhome.repository
 
+import androidx.paging.*
 import com.example.network.helper.ResultWrapper
 import com.example.network.helper.safeApiCallFlow
 import com.example.network.model.*
@@ -18,8 +19,16 @@ class MyHomeRepositoryImpl(val service: MyHomeService) : MyHomeRepository {
         return safeApiCallFlow { service.home() }
     }
 
-    override suspend fun cards(): Flow<ResultWrapper<Cards>> {
-        return safeApiCallFlow { service.cards() }
+    override suspend fun cards(): Flow<PagingData<Card>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = {
+                CardPagingSource(service = service)
+            }
+        ).flow
     }
 
     override suspend fun cardDetails(cardId: Int): Flow<ResultWrapper<CardDetail>> {
@@ -31,3 +40,4 @@ class MyHomeRepositoryImpl(val service: MyHomeService) : MyHomeRepository {
     }
 
 }
+

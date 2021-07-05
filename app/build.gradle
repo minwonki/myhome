@@ -93,4 +93,10 @@ dependencies {
 
     // Log
     implementation 'com.jakewharton.timber:timber:4.7.1'
+
+    // swipe refresh
+    implementation "com.google.accompanist:accompanist-swiperefresh:0.13.0"
+
+    // Paging Compose
+    implementation "androidx.paging:paging-compose:1.0.0-alpha11"
 }

@@ -1,5 +1,6 @@
 package com.example.myhome.repository
 
+import androidx.paging.PagingData
 import com.example.network.helper.ResultWrapper
 import com.example.network.model.*
 import kotlinx.coroutines.flow.Flow
@@ -40,17 +41,14 @@ class FakeMyHomeRepositoryImpl: MyHomeRepository {
         }.onStart { ResultWrapper.Loading }
     }
 
-    override suspend fun cards(): Flow<ResultWrapper<Cards>> {
+    override suspend fun cards(): Flow<PagingData<Card>> {
         return flow {
             emit(
-                ResultWrapper.Success(
-                    Cards(
-                        Ok = true, errorMsg = null,
-                        cards = listOf(Card(userId = 1, imgUrl = "", description = "desc", id = 0))
-                    )
+                PagingData.from(
+                    data = listOf(Card(userId = 1, imgUrl = "", description = "desc", id = 0))
                 )
             )
-        }.onStart { ResultWrapper.Loading }
+        }
     }
 
     override suspend fun cardDetails(cardId: Int): Flow<ResultWrapper<CardDetail>> {
