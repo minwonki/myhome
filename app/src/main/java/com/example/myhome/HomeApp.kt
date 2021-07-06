@@ -1,12 +1,17 @@
 package com.example.myhome
 
+import android.graphics.drawable.VectorDrawable
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.Home
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -40,7 +45,7 @@ fun MainBottomBar(navController: NavController, tabs: Array<MainMenuTabs>) {
         BottomNavigation {
             tabs.forEach { tab ->
                 BottomNavigationItem(
-                    icon = { },
+                    icon = { Icon(tab.icon, contentDescription = stringResource(id = tab.title)) },
                     label = { Text(stringResource(tab.title).uppercase(Locale.getDefault())) },
                     selected = currentRoute == tab.route,
                     onClick = {
@@ -63,9 +68,10 @@ fun MainBottomBar(navController: NavController, tabs: Array<MainMenuTabs>) {
 
 enum class MainMenuTabs(
     @StringRes val title: Int,
+    val icon : ImageVector,
     val route: String
 ) {
-    HOME(R.string.main_home, MainScreen.MainHome.route),
-    CARD(R.string.main_card, MainScreen.MainCard.route)
+    HOME(R.string.main_home, Icons.Rounded.Home, MainScreen.MainHome.route),
+    CARD(R.string.main_card, Icons.Rounded.Favorite, MainScreen.MainCard.route)
 }
 

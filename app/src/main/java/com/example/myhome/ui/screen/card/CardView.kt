@@ -28,9 +28,11 @@ import com.google.accompanist.imageloading.ImageLoadState
 @Composable
 fun CardView(
     navController: NavController,
-    viewModel: CardViewModel = hiltViewModel()
+    viewModel: CardViewModel = hiltViewModel(),
+    modifier: Modifier
 ) {
     CardView(
+        modifier = modifier,
         cards = viewModel.cards.collectAsLazyPagingItems(),
         cardOnClick = { cardId -> navController.navigate(route = RootScreen.CardDetail.createRoute(cardId = cardId)) }
     )
@@ -39,15 +41,16 @@ fun CardView(
 @Composable
 internal fun CardView(
     cards: LazyPagingItems<Card>,
-    cardOnClick: (Int) -> Unit = {}
+    cardOnClick: (Int) -> Unit = {},
+    modifier: Modifier
 ) {
     Scaffold(
         topBar = {},
         content = {
             Column(
-                modifier = Modifier
+                modifier = modifier
                     .fillMaxSize()
-                    .padding(10.dp)
+                    .padding(horizontal = 10.dp)
             ) {
                 LazyColumn(
                     modifier = Modifier

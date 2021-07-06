@@ -21,12 +21,12 @@ import com.example.network.model.Card
 import com.example.network.model.User
 import com.google.accompanist.glide.rememberGlidePainter
 import com.google.accompanist.imageloading.ImageLoadState
-import timber.log.Timber
 
 @Composable
 fun HomeView(
     navController: NavController,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    modifier: Modifier
 ) {
     HomeView(
         state = viewModel.state,

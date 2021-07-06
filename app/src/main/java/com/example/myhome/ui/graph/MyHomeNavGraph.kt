@@ -48,7 +48,10 @@ fun MyHomeNavGraph(
             route = RootScreen.Main.route,
             startDestination = MainMenuTabs.HOME.route
         ) {
-            addMenuNavGraph(navController = navController)
+            addMenuNavGraph(
+                modifier = modifier,
+                navController = navController
+            )
         }
 
        composable(
