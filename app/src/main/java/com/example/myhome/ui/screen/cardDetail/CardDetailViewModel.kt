@@ -33,7 +33,7 @@ class CardDetailViewModel @Inject constructor(
         }
     }
 
-    private fun cardInfo(cardId : Int) {
+    fun cardInfo(cardId : Int) {
         viewModelScope.launch {
             repo.cardDetails(cardId = cardId).collect { result ->
                 when (result) {

@@ -22,11 +22,10 @@ class HomeViewModel @Inject constructor(
         private set
 
     init {
-        Timber.i("HomeViewModel")
         getHome()
     }
 
-    private fun getHome() {
+    fun getHome() {
         viewModelScope.launch {
             repo.homes().collect { result ->
                 when (result) {

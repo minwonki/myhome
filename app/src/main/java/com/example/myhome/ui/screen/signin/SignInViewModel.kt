@@ -22,7 +22,7 @@ class SignInViewModel @Inject constructor(
         private set
 
     init {
-        Timber.i("SignInViewModel")
+        Timber.i("init")
     }
 
     fun closeAlertDialog() {

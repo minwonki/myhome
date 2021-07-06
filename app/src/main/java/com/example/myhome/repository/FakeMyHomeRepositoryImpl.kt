@@ -16,7 +16,7 @@ class FakeMyHomeRepositoryImpl: MyHomeRepository {
 
     override suspend fun signUp(params: HashMap<String, Any>): Flow<ResultWrapper<Auth>> {
         return flow {
-            emit(ResultWrapper.Success(Auth(Ok = true, errorMsg = null, userId = 123)))
+            emit(ResultWrapper.Success(Auth(Ok = false, errorMsg = "duplicate", userId = 123)))
         }.onStart { ResultWrapper.Loading }
     }
 

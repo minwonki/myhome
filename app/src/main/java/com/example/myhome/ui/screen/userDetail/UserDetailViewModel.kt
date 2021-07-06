@@ -32,7 +32,7 @@ class UserDetailViewModel @Inject constructor(
         }
     }
 
-    private fun userInfo(userId : Int) {
+    fun userInfo(userId : Int) {
         viewModelScope.launch {
             repo.userDetails(userId = userId).collect { result ->
                 when (result) {
