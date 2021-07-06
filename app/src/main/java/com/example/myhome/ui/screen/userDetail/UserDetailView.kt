@@ -12,6 +12,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.uicomponent.view.LoadingView
+import com.example.uicomponent.view.MyHomeAlert
 
 @Composable
 fun UserDetailView(
@@ -42,28 +44,15 @@ internal fun UserDetailView(
                 .padding(10.dp)) {
                 when (state) {
                     is UserDetailViewState.Alert -> {
-                        AlertDialog(
-                            title = { Text(text = "Alert")},
-                            text = { Text(text = state.msg) },
-                            onDismissRequest = {  },
-                            modifier = Modifier.padding(20.dp),
-                            confirmButton = {
-                                Button(
-                                    onClick = {  }
-                                ) {
-                                    Text("OK")
-                                }
-                            }
+                        MyHomeAlert(
+                            message = state.msg,
+                            onDismiss = { back() },
+                            confirm = { back()  }
                         )
                     }
                     UserDetailViewState.Empty -> { }
                     UserDetailViewState.Loading -> {
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            CircularProgressIndicator()
-                        }
+                        LoadingView(modifier = Modifier.fillMaxSize())
                     }
                     is UserDetailViewState.Success -> {
                         Text("User Nickname : ${state.user.nickName}")

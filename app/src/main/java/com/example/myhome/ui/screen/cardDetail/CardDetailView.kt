@@ -1,20 +1,26 @@
 package com.example.myhome.ui.screen.cardDetail
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Divider
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.myhome.MainMenuTabs
 import com.example.myhome.ui.graph.RootScreen
-import com.example.myhome.ui.screen.card.CardItem
-import com.example.myhome.ui.screen.home.CardItems
+import com.example.myhome.ui.screen.common.CardItems
 import com.example.myhome.ui.screen.userDetail.MyHomeTopBar
-import timber.log.Timber
+import com.example.uicomponent.view.CardItem
+import com.example.uicomponent.view.LoadingView
+import com.example.uicomponent.view.MyHomeAlert
+
 
 @Composable
 fun CardDetailView(
@@ -57,34 +63,21 @@ fun CardDetailView(
         ) {
             when (state) {
                 is CardDetailViewState.Alert -> {
-                    AlertDialog(
-                        title = { Text(text = "Alert") },
-                        text = { Text(text = state.msg) },
-                        onDismissRequest = { },
-                        modifier = Modifier.padding(20.dp),
-                        confirmButton = {
-                            Button(
-                                onClick = { }
-                            ) {
-                                Text("OK")
-                            }
-                        }
+                    MyHomeAlert(
+                        message = state.msg,
+                        onDismiss = { back() },
+                        confirm = { back() }
                     )
                 }
                 CardDetailViewState.Empty -> {
                 }
                 CardDetailViewState.Loading -> {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        CircularProgressIndicator()
-                    }
+                    LoadingView(modifier = Modifier.fillMaxSize())
                 }
                 is CardDetailViewState.Success -> {
                     CardItem(
-                        card = state.card,
-                        cardOnClick = { cardId -> Timber.i("Click Card:$cardId") }
+                        cardImgUrl = state.card.imgUrl,
+                        cardOnClick = { }
                     )
                     Divider()
                     Column(modifier = Modifier.fillMaxWidth()) {
@@ -104,3 +97,4 @@ fun CardDetailView(
         }
     }
 }
+

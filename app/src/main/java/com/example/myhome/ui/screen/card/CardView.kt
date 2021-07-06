@@ -1,17 +1,12 @@
 package com.example.myhome.ui.screen.card
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.*
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -19,11 +14,11 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import com.example.myhome.R
 import com.example.myhome.ui.graph.RootScreen
 import com.example.network.model.Card
-import com.google.accompanist.glide.rememberGlidePainter
-import com.google.accompanist.imageloading.ImageLoadState
+import com.example.uicomponent.view.CardItemWithDesc
+import com.example.uicomponent.view.ErrorItem
+import com.example.uicomponent.view.LoadingView
 
 @Composable
 fun CardView(
@@ -59,9 +54,10 @@ internal fun CardView(
                 ) {
                     items(cards) { card ->
                         card?.let {
-                            CardItem(
-                                card = card,
-                                cardOnClick = cardOnClick
+                            CardItemWithDesc(
+                                cardImgUrl = card.imgUrl,
+                                cardDescription = card.description,
+                                cardOnClick = { cardOnClick(card.id) }
                             )
                         }
                     }
@@ -110,80 +106,6 @@ internal fun CardView(
     )
 }
 
-@Composable
-fun CardItem(
-    card : Card,
-    cardOnClick: (Int) -> Unit
-) {
-    val painter = rememberGlidePainter(request = card.imgUrl)
-    Column {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(300.dp)
-                .clickable {
-                    cardOnClick(card.id)
-                },
-            contentAlignment = Alignment.Center,
-        ) {
 
-            Image(
-                painter = painter,
-                contentDescription = stringResource(R.string.image_content_desc),
-                contentScale = ContentScale.Crop
-            )
 
-            when (painter.loadState) {
-                is ImageLoadState.Loading -> {
-                    CircularProgressIndicator(Modifier.align(Alignment.Center))
-                }
-                is ImageLoadState.Error -> {
-                    Image(
-                        painter = painterResource(id = R.drawable.placeholder),
-                        contentDescription = stringResource(R.string.image_content_desc)
-                    )
-                }
-                else -> {
-                }
-            }
-        }
-        Text(card.description)
-    }
-}
 
-@Composable
-fun ErrorItem(
-    message: String,
-    modifier: Modifier = Modifier,
-    onClickRetry: () -> Unit
-) {
-    Row(
-        modifier = modifier.padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = message,
-            maxLines = 1,
-            modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.h6,
-            color = Color.Red
-        )
-        OutlinedButton(onClick = onClickRetry) {
-            Text(text = "Try again")
-        }
-    }
-}
-
-@Composable
-fun LoadingView(
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        CircularProgressIndicator()
-    }
-}

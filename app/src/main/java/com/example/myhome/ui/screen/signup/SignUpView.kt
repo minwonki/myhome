@@ -15,6 +15,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.myhome.ui.graph.LoginScreen
 import com.example.myhome.ui.graph.RootScreen
+import com.example.uicomponent.view.MyHomeAlert
 
 @Composable
 fun SignUpView(
@@ -64,18 +65,10 @@ internal fun SignUpView(
             )
         }
         is SignUpViewState.SignUpSuccess -> {
-            AlertDialog(
-                title = { Text(text = "Alert")},
-                text = { Text(text = state.msg) },
-                onDismissRequest = { closeAlert() },
-                modifier = Modifier.padding(20.dp),
-                confirmButton = {
-                    Button(
-                        onClick = { moveSignIn() }
-                    ) {
-                        Text("OK")
-                    }
-                }
+            MyHomeAlert(
+                message = state.msg,
+                onDismiss = { closeAlert() },
+                confirm = { moveSignIn() }
             )
         }
         SignUpViewState.SignUpWaiting -> {}
