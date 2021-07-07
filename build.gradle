@@ -2,6 +2,7 @@
 buildscript {
     ext {
         compose_version = '1.0.0-rc01'
+        kotlin_version = '1.5.10'
     }
     repositories {
         google()
@@ -10,6 +11,9 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:7.0.0-beta05"
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.10'
+        // 현재 1.5.10 -> 1.5.20 올리면 Hilt 호환성 문제가 있음. 좀 더 지켜보고 올리는것이 필요함.
+        // https://github.com/google/dagger/issues/2684
+        // Bugfix 될때까지 기다리던지 아니면 위에서 해결하는 방법을 따른다.
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files

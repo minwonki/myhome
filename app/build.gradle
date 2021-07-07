@@ -50,7 +50,7 @@ android {
     }
     composeOptions {
         kotlinCompilerExtensionVersion compose_version
-        kotlinCompilerVersion '1.5.10'
+        kotlinCompilerVersion kotlin_version
     }
 }
 
@@ -84,15 +84,15 @@ dependencies {
     implementation "com.google.accompanist:accompanist-glide:0.13.0"
 
     // navigation
-    implementation "androidx.navigation:navigation-compose:2.4.0-alpha02"
+    implementation "androidx.navigation:navigation-compose:2.4.0-alpha04"
 
     // hilt
     implementation "com.google.dagger:hilt-android:2.37"
     kapt "com.google.dagger:hilt-android-compiler:2.37"
 
     // hilt for compose
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha06'
-    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0-alpha02'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07'
+    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0-alpha03'
 
     // Log
     implementation 'com.jakewharton.timber:timber:4.7.1'
