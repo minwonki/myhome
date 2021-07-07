@@ -5,6 +5,8 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,43 +23,51 @@ fun UserDetailView(
     viewModel: UserDetailViewModel = hiltViewModel()
 ) {
     UserDetailView(
-        state = viewModel.state,
-        back = { navController.popBackStack() }
+        state = viewModel.state.collectAsState(),
+        back = { navController.popBackStack() },
+        onDismiss = { viewModel.closeAlert() },
+        confirmAction = { }
     )
 }
 
 @Composable
 internal fun UserDetailView(
-    state : UserDetailViewState,
-    back : () -> Unit = {}
+    state: State<AppState>,
+    back: () -> Unit = {},
+    onDismiss: () -> Unit = {},
+    confirmAction: () -> Unit = {}
 ) {
     Scaffold(
-        topBar = { 
-                MyHomeTopBar(
-                    title = "User Info",
-                    leftAction = { back() }
-                )
+        topBar = {
+            MyHomeTopBar(
+                title = "User Info",
+                leftAction = { back() }
+            )
         },
         content = {
-            Column(modifier = Modifier
-                .fillMaxSize()
-                .padding(10.dp)) {
-                when (state) {
-                    is UserDetailViewState.Alert -> {
-                        MyHomeAlert(
-                            message = state.msg,
-                            onDismiss = { back() },
-                            confirm = { back()  }
-                        )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(10.dp)
+            ) {
+                when (state.value.viewState) {
+                    UserDetailViewState.Empty -> {
                     }
-                    UserDetailViewState.Empty -> { }
                     UserDetailViewState.Loading -> {
                         LoadingView(modifier = Modifier.fillMaxSize())
                     }
                     is UserDetailViewState.Success -> {
-                        Text("User Nickname : ${state.user.nickName}")
-                        Text("User Introduction : ${state.user.introduction}")
+                        Text("User Nickname : ${(state.value.viewState as UserDetailViewState.Success).user.nickName}")
+                        Text("User Introduction : ${(state.value.viewState as UserDetailViewState.Success).user.introduction}")
                     }
+                }
+
+                if (state.value.alert.first) {
+                    MyHomeAlert(
+                        message = state.value.alert.second,
+                        onDismiss = { back() },
+                        confirm = { back() }
+                    )
                 }
             }
         }

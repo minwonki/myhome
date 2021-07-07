@@ -1,14 +1,12 @@
 package com.example.myhome.ui.screen.userDetail
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myhome.repository.MyHomeRepository
 import com.example.network.helper.ResultWrapper
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -17,12 +15,13 @@ import javax.inject.Inject
 @HiltViewModel
 class UserDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val repo : MyHomeRepository
-): ViewModel() {
-    var userId : Int? = savedStateHandle.get("userId")
+    private val repo: MyHomeRepository
+) : ViewModel() {
+    var userId: Int? = savedStateHandle.get("userId")
         private set
 
-    var state by mutableStateOf<UserDetailViewState>(UserDetailViewState.Empty)
+    var state =
+        MutableStateFlow(AppState(viewState = UserDetailViewState.Empty, alert = Pair(false, "")))
         private set
 
     init {
@@ -32,29 +31,40 @@ class UserDetailViewModel @Inject constructor(
         }
     }
 
-    fun userInfo(userId : Int) {
+    fun closeAlert() {
+        state.value = state.value.copy(alert = Pair(first = false, ""))
+    }
+
+    fun userInfo(userId: Int) {
         viewModelScope.launch {
             repo.userDetails(userId = userId).collect { result ->
                 when (result) {
                     is ResultWrapper.GenericError -> {
-                        state = UserDetailViewState.Alert(msg = "${result.message}")
+                        state.value =
+                            state.value.copy(alert = Pair(true, "${result.message}"))
                     }
                     ResultWrapper.Loading -> {
-                        state = UserDetailViewState.Loading
+                        state.value =
+                            state.value.copy(viewState = UserDetailViewState.Loading)
                     }
                     is ResultWrapper.NetworkError -> {
-                        state = UserDetailViewState.Alert(msg = "${result.message}")
+                        state.value =
+                            state.value.copy(alert = Pair(true, "${result.message}"))
                     }
                     is ResultWrapper.Success -> {
-                        state = if (result.value.Ok) {
-                            UserDetailViewState.Success(user = result.value.user)
+                        if (result.value.Ok) {
+                            state.value =
+                                state.value.copy(viewState = UserDetailViewState.Success(user = result.value.user))
                         } else {
-                            UserDetailViewState.Alert(msg = "${result.value.errorMsg}")
+                            state.value =
+                                state.value.copy(alert = Pair(true, "${result.value.errorMsg}"))
                         }
                     }
                 }
             }
         }
     }
+
+
 }
 

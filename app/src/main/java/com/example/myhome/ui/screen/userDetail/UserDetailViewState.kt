@@ -6,5 +6,9 @@ sealed class UserDetailViewState {
     object Empty : UserDetailViewState()
     object Loading : UserDetailViewState()
     data class Success(val user: User) : UserDetailViewState()
-    data class Alert(val msg: String) : UserDetailViewState()
 }
+
+data class AppState(
+    val viewState : UserDetailViewState = UserDetailViewState.Empty,
+    val alert : Pair<Boolean, String> = Pair(first = false, second = "message")
+)

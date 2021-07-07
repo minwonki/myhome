@@ -1,6 +1,5 @@
 package com.example.myhome
 
-import android.graphics.drawable.VectorDrawable
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*

@@ -15,6 +15,19 @@ class UserDetailViewModelTest {
     var coroutinesTestRule = CoroutinesTestRule()
 
     @Test
+    fun testCloseAlert() {
+        val viewModel = UserDetailViewModel(
+            savedStateHandle = SavedStateHandle(),
+            repo = FakeMyHomeRepositoryImpl()
+        )
+
+        viewModel.closeAlert()
+        println("result = ${viewModel.state.value.alert}")
+
+        Assert.assertEquals(false, viewModel.state.value.alert.first)
+    }
+
+    @Test
     fun testUserInfo() {
         val viewModel = UserDetailViewModel(
             savedStateHandle = SavedStateHandle(),
@@ -23,11 +36,11 @@ class UserDetailViewModelTest {
 
         coroutinesTestRule.testDispatcher.runBlockingTest {
             viewModel.userInfo(1)
-            println("result = ${viewModel.state}")
+            println("result = ${viewModel.state.value}")
 
             Assert.assertEquals(
                 0,
-                (viewModel.state as UserDetailViewState.Success).user.id
+                (viewModel.state.value.viewState as UserDetailViewState.Success).user.id
             )
         }
     }

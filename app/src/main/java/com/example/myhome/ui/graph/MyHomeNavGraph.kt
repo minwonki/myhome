@@ -1,6 +1,5 @@
 package com.example.myhome.ui.graph
 
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -60,7 +59,6 @@ fun MyHomeNavGraph(
                navArgument("cardId") { type = NavType.IntType }
            )
        ) {
-           Text("CardDetail")
            CardDetailView(navController = navController)
        }
 

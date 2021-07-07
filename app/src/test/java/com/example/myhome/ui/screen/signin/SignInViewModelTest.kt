@@ -2,9 +2,6 @@ package com.example.myhome.ui.screen.signin
 
 import com.example.myhome.CoroutinesTestRule
 import com.example.myhome.repository.FakeMyHomeRepositoryImpl
-import com.example.myhome.ui.screen.home.HomeViewModel
-import com.example.myhome.ui.screen.home.HomeViewState
-import junit.framework.TestCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
