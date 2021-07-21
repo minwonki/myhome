@@ -1,5 +1,5 @@
 # myhome
-My Home Project
+Jetpack Compose 포함한 실제 업무에서 적용 못 해본것들을 연습하기 위한 프로젝트
 
 ## 개발 환경
  * Android Studio Arctic Fox 사용 [Android Studio Arctic Fox](https://developer.android.com/studio/preview)
