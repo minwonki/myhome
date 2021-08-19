@@ -9,6 +9,7 @@ Jetpack Compose 포함한 실제 업무에서 적용 못 해본것들을 연습�
  * 개발 언어는 [Kotlin](https://kotlinlang.org/) 사용
  * UI 작성은 [Jetpack Compose](https://developer.android.com/jetpack/compose) 사용
  * 네트워크 모듈은 [Retrofit](https://square.github.io/retrofit/) 사용
+ * 네트워크 & UI의 모듈화
  * 비동기 작업에과 데이터 흐름에 [Kotlin Coroutines](https://kotlinlang.org/docs/reference/coroutines/coroutines-guide.html), [Kotlin Flow](https://developer.android.com/kotlin/flow) 사용
  * 이미지 로더 [Glide](https://google.github.io/accompanist/glide/) 사용
  * Dependency injection 에는 [Hilt](https://dagger.dev/hilt/) 사용
@@ -22,4 +23,4 @@ Jetpack Compose 포함한 실제 업무에서 적용 못 해본것들을 연습�
  * Coroutine 동작원리는 자세히 공부할 기회가 있어서 좋았음.
  * Flow 사용하면서 RxJava 대체 할 수 있겠는데...
  * Jetpack Compose Preview 수시로 에러 발생으로 제대로 활용 못함.
- * 기존에 눈팅만 하던것들을 사용해 본것이 가장 좋았다.
+ * 기존에 눈팅만 하던것들을 연습.
